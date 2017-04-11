@@ -276,4 +276,3 @@ function Player(query, {url} = {}) {
   player.onmousemove = hideControl;
   /***********************************************/
 }
-document.body.onload = function(){ new Player('#player', {url : 'vid2.mp4'});};
