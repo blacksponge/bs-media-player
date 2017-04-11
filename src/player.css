@@ -40,7 +40,7 @@ video{
 .hide_control .time{
   display: none!important;
 }
-.control_bar{
+.bs-control-bar{
   position: absolute;
   width: calc(100% - 10px);
   bottom: 0px;
@@ -49,12 +49,17 @@ video{
   background: -o-linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.6)); /* For Opera 11.1 to 12.0 */
   background: -moz-linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.6)); /* For Firefox 3.6 to 15 */
   background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.6)); /* Standard syntax */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
-.play, .timer, .state_bar{
+.bs-player-ctrl-i{
   margin-right: 10px;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 .state_bar{
-  width:calc(100% - 325px);
+  flex: 1;
 }
 .play, .volume svg, .fullscreen{
   cursor: pointer;
@@ -73,24 +78,20 @@ video{
 }
 .timer{
   width: 50px;
-  height: 25px;
-  display: inline-block;
   position: relative;
 }
 .timer::after{
   content: attr(time);
-  position: absolute;
-  top: 25%;
-  width: 100%;
   text-align: center;
 }
 .volume{
   width: 100px;
-  display: inline-block;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 .volume .slider{
-  margin-left: 10px;
-  width: 50px;
+  flex: 1;
 }
 body.fullscreenmode{
   margin: 0;

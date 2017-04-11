@@ -10,19 +10,19 @@ function Player(query, {url} = {}) {
   </video>
   <div id="error">Une puissante magie noire s'est emparée de la vidéo. <span>Tenter de la récupérer</span></div>
   <div id="spinner"></div>
-  <div class="control_bar">
-    <svg class="play" width="25" height="25"></svg>
-    <div time="00:00" class="curTime timer"></div>
-    <div class="state_bar">
+  <div class="bs-control-bar">
+    <svg class="bs-player-ctrl-i play" width="25" height="25"></svg>
+    <div time="00:00" class="bs-player-ctrl-i curTime timer"></div>
+    <div class="bs-player-ctrl-i state_bar">
     </div>
-    <div time="00:00" class="endTime timer"></div>
-    <div class="time"></div>
+    <div time="00:00" class="bs-player-ctrl-i endTime timer"></div>
     <div class="volume">
-      <svg width="25" height="25"></svg>
-      <div class="slider">
+      <svg width="25" height="25" class="bs-player-ctrl-i"></svg>
+      <div class="slider bs-player-ctrl-i">
       </div>
     </div>
-    <svg class="fullscreen" width="30" height="25"></svg>
+    <svg class="bs-player-ctrl-i fullscreen" width="30" height="25"></svg>
+    <div class="time"></div>
   </div>`;
 
   var player = document.querySelector(query);
