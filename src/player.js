@@ -98,6 +98,11 @@ function Player(query, {url} = {}) {
     },
     init : function(obj){
       media.volume = obj.val;
+      if(obj.val > 0.75){
+        volLvl.attr({stroke:'white'});
+      }else{
+        volLvl.attr({stroke:'none'});
+      }
     },
     saveState : true,
     id : 'volume',
