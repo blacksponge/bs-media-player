@@ -1,7 +1,7 @@
 "use strict"
 
 /****  SLIDER ****/
-function Slider(query, {move = () => {}, init = () => {}, startValue = 0} = {}){
+function Slider(query, {move = () => {}, init = () => {}, startValue = 0, saveState = false, id = query, forgetAfter = null} = {}){
   this.el = document.querySelector(query);
   this.el.classList.add('bs-slider');
 
@@ -18,10 +18,15 @@ function Slider(query, {move = () => {}, init = () => {}, startValue = 0} = {}){
   this.cbMove = move;
   this.cbInit = init;
   this.percentage = 0;
+  this.forgetAfter = forgetAfter;
+  this.id = 'slider#' + id;
+  this.saveState = saveState;
 
-  this.test = 0;
+  if(this.saveState && this.id){
+    startValue = localStorage.getItem(this.id) || startValue;
+  }
 
-  this.value(startValue)
+  this.value(startValue);
 
   this.cbInit.call(this, {val : this.percentage});
 
@@ -36,16 +41,18 @@ Slider.prototype.move = function(e){
   var sliderWidth = this.el.clientWidth;
   var cursorPos = (e.clientX -  this.el.getBoundingClientRect().left);
   var oldPercentage = this.percentage;
+  var newValue = 0;
+
   if(cursorPos < 0){
-    this.percentage = 0;
+    newValue = 0;
   } else if (cursorPos > sliderWidth){
-    this.percentage = 1;
+    newValue = 1;
   } else {
-    this.percentage = (cursorPos/sliderWidth);
+    newValue = (cursorPos/sliderWidth);
   }
-  if(this.percentage != oldPercentage){
-    this.spacer.style.width = this.percentage*100+'%';
-    this.cbMove.call(this, {val:this.percentage});
+
+  if(newValue != oldPercentage){
+    this.value(newValue, false);
   }
 }
 
@@ -70,16 +77,31 @@ Slider.prototype.end = function(e){
   document.removeEventListener('mousemove', this.move.bind(this));
 }
 
-Slider.prototype.value = function(newVal = null, runCb = false){
+Slider.prototype.value = function(newVal = null, preventCallback = true){
   if(newVal === null){
     return this.percentage;
   }
   this.percentage = newVal;
   this.spacer.style.width = (this.percentage * 100) + '%';
-  if(runCb)
-    this.cbMove.call(this,{val:percentage});
+
+  if(!preventCallback){
+    this.cbMove.call(this,{val:newVal});
+  }
+
+  if( this.forgetAfter !== null && this.percentage > this.forgetAfter){
+    localStorage.removeItem(this.id);
+  }else if( this.saveState && this.id ){
+    localStorage.setItem(this.id, this.percentage);
+  }
 }
 
 Slider.prototype.get = function(){
   return this.el;
+}
+
+Slider.prototype.forget = function(doNotSaveAgain = false){
+  if(doNotSaveAgain){
+    this.saveState = false;
+  }
+  localStorage.removeItem(this.id);
 }

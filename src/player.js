@@ -41,11 +41,11 @@ function Player(query, {url} = {}) {
   var endTime = player.querySelector('.endTime');
 
   /***************** Timeline ********************/
-  var x,xPos,duration,currentTime;
+  var x,xPos,duration = 0,currentTime = 0;
 
   var timelineSlider = new Slider(query + ' .state_bar', {
     move : function(obj){
-      media.currentTime = (media.duration * obj.val);
+      media.currentTime = (duration * obj.val);
     },
     init : function(obj){
       this.get().onmouseover = () => {
@@ -66,8 +66,13 @@ function Player(query, {url} = {}) {
         x = (x-boundingRectTL.left)/this.get().clientWidth * media.duration;
         timeEl.textContent = ('0'+Math.floor(x/60)).slice(-2) + ':' + ('0'+Math.floor(x)%60).slice(-2);
       }
-    }
+      currentTime = obj.val;
+    },
+    saveState : true,
+    id : 'mediaPlayer:' + url,
+    forgetAfter : 0.9
   });
+
   /***********************************************/
   /***************** Volume **********************/
   var vol = Snap(query+' .volume svg');
@@ -91,6 +96,11 @@ function Player(query, {url} = {}) {
       }
       media.volume = obj.val;
     },
+    init : function(obj){
+      media.volume = obj.val;
+    },
+    saveState : true,
+    id : 'volume',
     startValue : 0.5
   });
   /***********************************************/
@@ -133,6 +143,7 @@ function Player(query, {url} = {}) {
   //Affichage du temps total de la vidéo au chargement des méta data
   media.onloadedmetadata = function(){
     duration=media.duration; //Utilisé aussi dans media.ontimeupdate
+    media.currentTime = currentTime * duration;
     endTime.setAttribute('time', ('0'+Math.floor(duration/60)).slice(-2) + ':' + ('0'+Math.floor(duration)%60).slice(-2));
   };
 
