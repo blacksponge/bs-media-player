@@ -19,25 +19,31 @@ function Slider(query, {move = () => {}, init = () => {}, startValue = 0} = {}){
   this.cbInit = init;
   this.percentage = 0;
 
+  this.test = 0;
+
   this.value(startValue)
 
   this.cbInit.call(this, {val : this.percentage});
 
-  document.addEventListener('mousemove', this.move.bind(this));
-
   this.el.addEventListener('mousedown', this.start.bind(this));
 
-  document.addEventListener('mouseup', this.end.bind(this));
 }
 
 Slider.prototype.move = function(e){
   e.preventDefault();
   if(!this.drag)
     return
-  var w = this.el.clientWidth;
-  var x = (e.clientX -  this.el.getBoundingClientRect().left);
-  if(x >= 0 && x <= w){
-    this.percentage = (x/w);
+  var sliderWidth = this.el.clientWidth;
+  var cursorPos = (e.clientX -  this.el.getBoundingClientRect().left);
+  var oldPercentage = this.percentage;
+  if(cursorPos < 0){
+    this.percentage = 0;
+  } else if (cursorPos > sliderWidth){
+    this.percentage = 1;
+  } else {
+    this.percentage = (cursorPos/sliderWidth);
+  }
+  if(this.percentage != oldPercentage){
     this.spacer.style.width = this.percentage*100+'%';
     this.cbMove.call(this, {val:this.percentage});
   }
@@ -47,6 +53,11 @@ Slider.prototype.start = function(e){
   this.drag = true;
   this.el.classList.add('bs-slider-state-moving');
   this.move(e);
+
+  this.test ++;
+
+  document.addEventListener('mouseup', this.end.bind(this));
+  document.addEventListener('mousemove', this.move.bind(this));
 }
 
 Slider.prototype.end = function(e){
@@ -54,6 +65,9 @@ Slider.prototype.end = function(e){
     return;
   this.el.classList.remove('bs-slider-state-moving');
   this.drag = false;
+
+  document.removeEventListener('mouseup', this.end.bind(this));
+  document.removeEventListener('mousemove', this.move.bind(this));
 }
 
 Slider.prototype.value = function(newVal = null, runCb = false){
